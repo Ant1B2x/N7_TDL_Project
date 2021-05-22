@@ -1,0 +1,31 @@
+### Starting build.
+# Target: ast.ml.depends, tags: { extension:ml, file:ast.ml, ocaml, ocamldep, quiet }
+/home/abedex/.opam/4.07.1/bin/ocamldep.opt -modules ast.ml > ast.ml.depends # cached
+# Target: tds.mli.depends, tags: { extension:mli, file:tds.mli, ocaml, ocamldep, quiet }
+/home/abedex/.opam/4.07.1/bin/ocamldep.opt -modules tds.mli > tds.mli.depends # cached
+# Target: type.mli.depends, tags: { extension:mli, file:type.mli, ocaml, ocamldep, quiet }
+/home/abedex/.opam/4.07.1/bin/ocamldep.opt -modules type.mli > type.mli.depends # cached
+# Target: type.cmi, tags: { byte, compile, extension:mli, file:type.mli, interf, ocaml, quiet }
+/home/abedex/.opam/4.07.1/bin/ocamlc.opt -c -o type.cmi type.mli # cached
+# Target: tds.cmi, tags: { byte, compile, extension:mli, file:tds.mli, interf, ocaml, quiet }
+/home/abedex/.opam/4.07.1/bin/ocamlc.opt -c -o tds.cmi tds.mli # cached
+# Target: ast.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:ast.cmo, file:ast.ml, implem, ocaml, quiet }
+/home/abedex/.opam/4.07.1/bin/ocamlc.opt -c -o ast.cmo ast.ml # cached
+# Target: code.mli.depends, tags: { extension:mli, file:code.mli, ocaml, ocamldep, quiet }
+/home/abedex/.opam/4.07.1/bin/ocamldep.opt -modules code.mli > code.mli.depends # cached
+# Target: code.cmi, tags: { byte, compile, extension:mli, file:code.mli, interf, ocaml, quiet }
+/home/abedex/.opam/4.07.1/bin/ocamlc.opt -c -o code.cmi code.mli # cached
+# Target: compilateur.ml.depends, tags: { extension:ml, file:compilateur.ml, ocaml, ocamldep, quiet }
+/home/abedex/.opam/4.07.1/bin/ocamldep.opt -modules compilateur.ml > compilateur.ml.depends # cached
+# Target: lexer.mll, tags: { extension:mll, file:lexer.mll, lexer, ocaml, ocamllex, quiet }
+/home/abedex/.opam/4.07.1/bin/ocamllex.opt -q lexer.mll # cached
+# Target: lexer.ml.depends, tags: { extension:ml, file:lexer.ml, ocaml, ocamldep, quiet }
+/home/abedex/.opam/4.07.1/bin/ocamldep.opt -modules lexer.ml > lexer.ml.depends # cached
+# Target: parser.mly, tags: { extension:mly, file:parser.mly, infer, ocaml, ocamlyacc, parser, quiet }
+/home/abedex/.opam/4.07.1/bin/ocamlyacc parser.mly
++ /home/abedex/.opam/4.07.1/bin/ocamlyacc parser.mly
+File "parser.mly", line 40: syntax error
+(* Type de l'attribut synth??tis?? des non-terminaux *)
+^
+Command exited with code 1.
+# Compilation unsuccessful.
