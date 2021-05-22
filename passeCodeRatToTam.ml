@@ -16,8 +16,7 @@ let rec analyse_expression e =
     (
       match info_ast_to_info info with
       | InfoVar(_,t,dep,reg) -> "LOAD ("^(string_of_int (getTaille t))^") "^(string_of_int dep)^"["^reg^"]\n"
-      (*| InfoConst(_,v) -> "LOAD ("^(string_of_int (getTaille Int))^") "^(string_of_int dep)^"["^reg^"]\n"*)
-      | _ -> failwith("internal error 1")
+      | _ -> failwith("internal error")
     )
   | AstType.Rationnel(e1, e2) ->
     let c1 = analyse_expression e1 in
@@ -47,15 +46,15 @@ let rec analyse_expression e =
     let cle = List.fold_left (fun t e -> t^(analyse_expression e)) "" le in
     (
       match info_ast_to_info info with
-      | InfoFun(n,_,_) -> cle^"CALL (SB) "^n^"\n"
-      | _ -> failwith "internal error 2"
+      | InfoFun(n,_,_) -> cle^"CALL (ST) "^n^"\n"
+      | _ -> failwith "internal error"
     )
 
 
 let analyse_affectable a =
   match info_ast_to_info a with
   | InfoVar(_,t,dep,reg) -> "STORE ("^(string_of_int(getTaille t))^") "^(string_of_int dep)^"["^reg^"]\n"
-  | _ -> failwith "internal error 3"
+  | _ -> failwith "internal error"
 
 
 let rec analyse_taille_bloc b =
@@ -86,7 +85,7 @@ let rec analyse_instruction i =
         "PUSH "^(string_of_int (getTaille t))^
         "\n"^ce^
         "STORE ("^(string_of_int (getTaille t))^") "^(string_of_int dep)^"["^reg^"]\n"
-      | _ -> failwith "internal error 4"
+      | _ -> failwith "internal error"
     )
   | AstType.Affectation(e,i) -> (analyse_expression e)^(analyse_affectable i)
   | AstType.AffichageInt(e) ->
@@ -98,34 +97,36 @@ let rec analyse_instruction i =
   | AstType.AffichageBool(e) -> 
     let ce = analyse_expression e in
     ce^"SUBR BOut\n"
-  | AstType.Conditionnelle(_,b1,b2) -> 
-    let cb1 = analyse_bloc b1
+  | AstType.Conditionnelle(e,b1,b2) ->
+    let ce = analyse_expression e
+    in let cb1 = analyse_bloc b1
     in let ptb1 = analyse_taille_bloc b1
     in let cb2 = analyse_bloc b2
     in let ptb2 = analyse_taille_bloc b2
     in let etiqe = getEtiquette () (* étiquette du else *)
     in let etiqf = getEtiquette () (* étiquette de fin du if *)
-    in cb1^
+    in ce^
       "JUMPIF (0) "^etiqe^
       "\n"^cb1^
-      "POP (0)"^(string_of_int ptb1)^"\n"^
+      "POP (0) "^(string_of_int ptb1)^"\n"^
       "JUMP "^etiqf^
-      "\nLABEL "^etiqe^
+      "\n"^etiqe^
       "\n"^cb2^
-      "POP (0)"^(string_of_int ptb2)^"\n"^
-      "LABEL "^etiqf^"\n"
-  | AstType.TantQue(_,b) -> 
-    let cb = analyse_bloc b
+      "POP (0) "^(string_of_int ptb2)^"\n"^
+      etiqf^"\n"
+  | AstType.TantQue(e,b) ->
+    let ce = analyse_expression e
+    in let cb = analyse_bloc b
     in let ptb = analyse_taille_bloc b
     in let etiq = getEtiquette ()
     in let etiq2 = getEtiquette ()
-    in "LABEL "^etiq^
-      "\n"^cb^
+    in etiq^
+      "\n"^ce^
       "JUMPIF (0) "^etiq2^
       "\n"^cb^
-      "POP (0)"^(string_of_int ptb)^"\n"^
+      "POP (0) "^(string_of_int ptb)^"\n"^
       "JUMP "^etiq^
-      "\nLABEL "^etiq2^"\n"
+      "\n"^etiq2^"\n"
   | AstType.Empty -> ""
 
 
@@ -142,29 +143,29 @@ let analyse_fonction (Ast.AstPlacement.Fonction(info,_,li,e)) =
       let cb = analyse_bloc li
       in let ptb = analyse_taille_bloc li
       in let ce = analyse_expression e in 
-      "LABEL "^n^
+      n^
       "\n"^cb^
       ce^
-      "POP ("^(string_of_int (getTaille t))^")"^(string_of_int ptb)^
+      "POP ("^(string_of_int (getTaille t))^") "^(string_of_int ptb)^
       "\nRETURN ("^(string_of_int (getTaille t))^")"^(string_of_int(List.fold_left (fun nb t -> (getTaille t) + nb) 0 tl))^"\n"
-  | _ -> failwith "internal error 5"
+  | _ -> failwith "internal error"
 
 
 let analyser (Ast.AstPlacement.Programme (fonctions, prog)) = 
   let eprog = getEntete ()
   in let cf = List.map (analyse_fonction) fonctions
-  in let rec aux l =
+  in let rec funstostring l =
     match l with
     | [] -> ""
-    | t::q -> t^"\n"^(aux q)
-  in let fprog = aux cf
+    | t::q -> t^"\n"^(funstostring q)
+  in let fprog = funstostring cf
   in let cb = analyse_bloc prog
   in let ptb = analyse_taille_bloc prog
   in eprog^
     fprog^
-    "LABEL main\n"^
+    "main\n"^
     cb^
-    "POP (0)"^
+    "POP (0) "^
     (string_of_int ptb)^
     "\n\nHALT"
 

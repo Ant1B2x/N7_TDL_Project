@@ -61,7 +61,7 @@ let rec analyse_type_expression e =
     (
       match info_ast_to_info ia with
       | InfoVar(_,t,_,_) -> (Ident ia, t)
-      | InfoConst(_,_) -> (Ident ia, Int)
+      | InfoConst(_,e) -> (Entier e, Int)
       | _ -> failwith "internal error"
     )
   | AstTds.AppelFonction (ia, el) ->

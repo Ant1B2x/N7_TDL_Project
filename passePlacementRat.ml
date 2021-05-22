@@ -59,14 +59,14 @@ let rec analyse_parametres lp =
 
 let analyse_placement_fonction (AstType.Fonction(n,lp,li,e)) =
   let _ = analyse_parametres lp in
-  let pli = analyse_placement_bloc li 3 "LB" in
-  Fonction(n,lp,pli,e)
+  let _ = analyse_placement_bloc li 3 "LB" in
+  Fonction(n,lp,li,e)
 
 
 let analyser (AstType.Programme (fonctions,prog)) =
   let pf = List.map analyse_placement_fonction fonctions in 
-  let pb = analyse_placement_bloc prog 0 "SB" in
-  Programme (pf,pb)
+  let _ = analyse_placement_bloc prog 0 "SB" in
+  Programme (pf,prog)
 
 
 end

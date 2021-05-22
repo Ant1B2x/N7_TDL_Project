@@ -1,1 +1,0 @@
-compilateur.ml: Lexer Lexing Parser Passe PasseCodeNopNop PasseNop PasseTdsRat PasseTypeNop Printf
